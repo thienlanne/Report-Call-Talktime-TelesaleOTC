@@ -1,172 +1,112 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/PC_HP/Downloads/index_2.html -->
-<html lang="vi"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Báo cáo cuộc gọi OTC</title>
-<script src="./index_files/chart.umd.js.tải xuống"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  :root {
-    --bg: #f5f4f0;
-    --surface: #ffffff;
-    --surface2: #f0efe9;
-    --border: rgba(0,0,0,0.10);
-    --border2: rgba(0,0,0,0.18);
-    --text: #1a1a18;
-    --text2: #5f5e5a;
-    --text3: #888780;
-    --blue: #378ADD;
-    --blue-bg: #E6F1FB;
-    --green: #1D9E75;
-    --green-bg: #E1F5EE;
-    --amber: #BA7517;
-    --amber-bg: #FAEEDA;
-    --red: #A32D2D;
-    --red-bg: #FCEBEB;
-    --radius: 10px;
-    --radius-sm: 6px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
-
-  /* ── Layout ── */
-  .wrapper { max-width: 1200px; margin: 0 auto; padding: 24px 20px 40px; }
-  .topbar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; gap: 12px; flex-wrap: wrap; }
-  .topbar-left h1 { font-size: 20px; font-weight: 600; }
-  .topbar-left p { font-size: 13px; color: var(--text2); margin-top: 3px; }
-  .btn-edit { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border2); background: var(--surface); font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text); transition: background .15s; }
-  .btn-edit:hover { background: var(--surface2); }
-  .btn-edit svg { width: 15px; height: 15px; }
-
-  /* ── Metric Cards ── */
-  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
-  .metric { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
-  .metric-icon { font-size: 18px; margin-bottom: 8px; }
-  .metric-label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--text2); margin-bottom: 4px; }
-  .metric-val { font-size: 26px; font-weight: 600; }
-  .metric-delta { font-size: 12px; margin-top: 3px; }
-  .delta-pos { color: #2d6b14; }
-  .delta-neg { color: var(--red); }
-
-  /* ── Chart Grid ── */
-  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  @media(max-width:640px) { .chart-row { grid-template-columns: 1fr; } }
-  .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
-  .card-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text2); margin-bottom: 10px; }
-  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; font-size: 12px; color: var(--text2); }
-  .legend span { display: flex; align-items: center; gap: 5px; }
-  .ldot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-
-  /* ── Tabs ── */
-  .tabs { display: flex; gap: 4px; margin-bottom: 12px; }
-  .tab { padding: 5px 14px; font-size: 12px; border-radius: var(--radius-sm); border: 0.5px solid var(--border2); cursor: pointer; background: transparent; color: var(--text2); font-weight: 500; transition: all .15s; }
-  .tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
-
-  /* ── Table ── */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid var(--border2); border-radius: var(--radius-sm); overflow: hidden; }
-  thead th { text-align: left; padding: 9px 10px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--text3); border-bottom: 2px solid var(--border2); border-right: 0.5px solid var(--border); white-space: nowrap; background: var(--surface2); }
-  thead th:last-child { border-right: none; }
-  thead th:first-child { border-radius: var(--radius-sm) 0 0 0; }
-  thead th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
-  tbody td { padding: 8px 10px; border-bottom: 1px solid var(--border2); border-right: 0.5px solid var(--border); color: var(--text); white-space: nowrap; }
-  tbody td:last-child { border-right: none; }
-  tbody tr:last-child td { border-bottom: none; }
-  tbody tr:hover td { filter: brightness(0.95); transition: filter .12s; }
-  .row-ok td { background: #e8f5e2 !important; }
-  .row-warn td { background: #fff8ec !important; }
-  .row-bad td { background: #eef3ff !important; }
-  .row-total td { background: var(--surface2) !important; }
-  .num { text-align: right; font-variant-numeric: tabular-nums; }
-  .bold { font-weight: 600; }
-  .kpi-neg { color: var(--red); font-weight: 600; }
-  .kpi-pos { color: #2d6b14; font-weight: 600; }
-  .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-  .badge-g { background: var(--green-bg); color: #27500A; }
-  .badge-r { background: var(--red-bg); color: #791F1F; }
-  .badge-y { background: var(--amber-bg); color: #633806; }
-
-  /* ── Table section toggle ── */
-  .table-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
-  .ttab { padding: 5px 14px; font-size: 12px; border-radius: var(--radius-sm); border: 0.5px solid var(--border2); cursor: pointer; background: transparent; color: var(--text2); font-weight: 500; transition: all .15s; }
-  .ttab.active { background: var(--surface2); color: var(--text); border-color: var(--border2); }
-  .tbl-section { display: none; }
-  .tbl-section.active { display: block; }
-
-  /* ── Modal ── */
-  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-  .modal-bg.open { display: flex; }
-  .modal { background: var(--surface); border-radius: var(--radius); width: 100%; max-width: 860px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 8px 40px rgba(0,0,0,.18); }
-  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 0.5px solid var(--border2); }
-  .modal-header h2 { font-size: 16px; font-weight: 600; }
-  .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text2); line-height: 1; padding: 2px 6px; border-radius: 4px; }
-  .modal-close:hover { background: var(--surface2); }
-  .modal-body { overflow-y: auto; padding: 20px; flex: 1; }
-  .modal-footer { padding: 14px 20px; border-top: 0.5px solid var(--border2); display: flex; gap: 8px; justify-content: flex-end; }
-  .btn-primary { padding: 8px 20px; border-radius: var(--radius-sm); background: var(--blue); color: #fff; border: none; font-size: 13px; font-weight: 600; cursor: pointer; }
-  .btn-primary:hover { background: #185FA5; }
-  .btn-cancel { padding: 8px 16px; border-radius: var(--radius-sm); background: var(--surface2); color: var(--text2); border: 1px solid var(--border2); font-size: 13px; font-weight: 500; cursor: pointer; }
-  .btn-cancel:hover { background: var(--bg); }
-
-  /* ── Raw data textarea ── */
-  .field-group { margin-bottom: 18px; }
-  .field-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text2); margin-bottom: 6px; }
-  .field-hint { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
-  textarea { width: 100%; border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 12px; font-family: 'Courier New', monospace; resize: vertical; background: var(--surface2); color: var(--text); line-height: 1.6; }
-  textarea:focus { outline: 2px solid var(--blue); border-color: transparent; }
-  .wd-row { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
-  .wd-input { width: 80px; padding: 7px 10px; border: 1px solid var(--border2); border-radius: var(--radius-sm); font-size: 14px; background: var(--surface2); }
-  .period-input { flex: 1; padding: 7px 10px; border: 1px solid var(--border2); border-radius: var(--radius-sm); font-size: 13px; background: var(--surface2); }
-  .notice { background: var(--blue-bg); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; color: #0C447C; margin-bottom: 16px; line-height: 1.6; }
-  .notice b { font-weight: 600; }
+:root{--bg:#f5f4f0;--surface:#fff;--surface2:#f0efe9;--border:rgba(0,0,0,.10);--border2:rgba(0,0,0,.18);--text:#1a1a18;--text2:#5f5e5a;--text3:#888780;--blue:#378ADD;--green:#1D9E75;--amber:#BA7517;--red:#A32D2D;--radius:10px;--rsm:6px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;}
+.wrap{max-width:1280px;margin:0 auto;padding:24px 20px 60px;}
+/* topbar */
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:12px;flex-wrap:wrap;}
+.topbar h1{font-size:20px;font-weight:600;}
+.topbar p{font-size:13px;color:var(--text2);margin-top:3px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:var(--rsm);border:1px solid var(--border2);background:var(--surface);font-size:13px;font-weight:500;cursor:pointer;color:var(--text);}
+.btn:hover{background:var(--surface2);}
+/* metrics */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px;}
+.mc{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
+.mc-icon{font-size:18px;margin-bottom:8px;}
+.mc-label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:4px;}
+.mc-val{font-size:26px;font-weight:600;}
+.mc-delta{font-size:12px;margin-top:3px;}
+.pos{color:#2d6b14;} .neg{color:var(--red);}
+/* charts */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+@media(max-width:640px){.chart-row{grid-template-columns:1fr;}}
+.card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
+.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:10px;}
+.leg{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;font-size:12px;color:var(--text2);}
+.leg span{display:flex;align-items:center;gap:5px;}
+.ldot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+/* tabs */
+.tabs{display:flex;gap:4px;margin-bottom:12px;}
+.tab{padding:5px 14px;font-size:12px;border-radius:var(--rsm);border:.5px solid var(--border2);cursor:pointer;background:transparent;color:var(--text2);font-weight:500;}
+.tab.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+/* table */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;border:1px solid var(--border2);border-radius:var(--rsm);overflow:hidden;}
+thead th{text-align:left;padding:9px 10px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text3);border-bottom:2px solid var(--border2);border-right:.5px solid var(--border);white-space:nowrap;background:var(--surface2);}
+thead th:last-child{border-right:none;}
+tbody td{padding:8px 10px;border-bottom:1px solid var(--border2);border-right:.5px solid var(--border);color:var(--text);white-space:nowrap;}
+tbody td:last-child{border-right:none;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{filter:brightness(.96);}
+.num{text-align:right;font-variant-numeric:tabular-nums;}
+.bold{font-weight:600;}
+.kn{color:#2d6b14;font-weight:600;} .kx{color:var(--red);font-weight:600;}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.bg{background:#E1F5EE;color:#27500A;} .br{background:#FCEBEB;color:#791F1F;} .by{background:#FAEEDA;color:#633806;}
+.row-ok td{background:#e8f5e2!important;} .row-warn td{background:#fff8ec!important;} .row-bad td{background:#eef3ff!important;} .row-tot td{background:var(--surface2)!important;}
+/* table section toggle */
+.ttabs{display:flex;gap:4px;margin-bottom:12px;}
+.ttab{padding:5px 14px;font-size:12px;border-radius:var(--rsm);border:.5px solid var(--border2);cursor:pointer;background:transparent;color:var(--text2);font-weight:500;}
+.ttab.active{background:var(--surface2);color:var(--text);}
+.tsec{display:none;} .tsec.active{display:block;}
+/* today card */
+.today-card{background:#fff;border:2px solid #FAC775;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(186,117,23,.10);margin-bottom:20px;}
+.today-head{background:linear-gradient(90deg,#fff8ec,#fdf6e3);padding:14px 20px;border-bottom:1.5px solid #FAC775;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.today-badges{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;}
+/* modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:900px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,.18);}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:.5px solid var(--border2);}
+.modal-hd h2{font-size:16px;font-weight:600;}
+.modal-x{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2);padding:2px 6px;border-radius:4px;}
+.modal-x:hover{background:var(--surface2);}
+.modal-body{overflow-y:auto;padding:20px;flex:1;}
+.modal-ft{padding:14px 20px;border-top:.5px solid var(--border2);display:flex;gap:8px;justify-content:flex-end;}
+.btn-ok{padding:8px 20px;border-radius:var(--rsm);background:var(--blue);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;}
+.btn-ok:hover{background:#185FA5;}
+.btn-cancel{padding:8px 16px;border-radius:var(--rsm);background:var(--surface2);color:var(--text2);border:1px solid var(--border2);font-size:13px;font-weight:500;cursor:pointer;}
+.fl{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:6px;}
+.fh{font-size:11px;color:var(--text3);margin-bottom:6px;}
+textarea{width:100%;border:1px solid var(--border2);border-radius:var(--rsm);padding:10px 12px;font-size:12px;font-family:'Courier New',monospace;resize:vertical;background:var(--surface2);color:var(--text);line-height:1.6;}
+textarea:focus{outline:2px solid var(--blue);border-color:transparent;}
+.fi{padding:7px 10px;border:1px solid var(--border2);border-radius:var(--rsm);font-size:13px;background:var(--surface2);}
+.notice{background:#E6F1FB;border-radius:var(--rsm);padding:10px 14px;font-size:12px;color:#0C447C;margin-bottom:16px;line-height:1.6;}
+.sep{border:none;border-top:2px dashed var(--border2);margin:20px 0;}
+.today-hint{background:#fff8ec;border:1px solid #FAC775;border-radius:8px;padding:10px 14px;font-size:13px;color:#633806;margin-bottom:14px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.cheer{margin-top:14px;text-align:center;padding:13px 20px;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:.05em;background:linear-gradient(90deg,#e8f5e2,#fff8ec,#eef3ff,#fff8ec,#e8f5e2);color:#2d6b14;border:1px solid #C0DD97;}
 </style>
 </head>
 <body>
-<div class="wrapper">
+<div class="wrap">
 
+  <!-- Topbar -->
   <div class="topbar">
-    <div class="topbar-left">
+    <div>
       <h1>📊 Báo cáo cuộc gọi OTC</h1>
       <p id="periodLabel">Month to date: 01/05 – 15/05/2025</p>
     </div>
-    <button class="btn-edit" onclick="openModal()">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"></path></svg>
+    <button class="btn" onclick="openModal()">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"/></svg>
       Cập nhật dữ liệu
     </button>
   </div>
 
   <!-- Metric Cards -->
-  <div class="metrics" id="metricCards">
-    <div class="metric">
-      <div class="metric-icon">📞</div>
-      <div class="metric-label">Tổng cuộc gọi</div>
-      <div class="metric-val">12.987</div>
-      <div class="metric-delta" style="color:var(--text2)">1180.6 call/ngày TB</div>
-    </div>
-    <div class="metric">
-      <div class="metric-icon">🔗</div>
-      <div class="metric-label">Kết nối thành công</div>
-      <div class="metric-val">3.903</div>
-      <div class="metric-delta delta-pos">▲ Vượt 103 so KPI</div>
-    </div>
-    <div class="metric">
-      <div class="metric-icon">⏱️</div>
-      <div class="metric-label">Talktime (phút)</div>
-      <div class="metric-val">3.474</div>
-      <div class="metric-delta delta-neg">▼ Còn thiếu 1276 so KPI</div>
-    </div>
-    <div class="metric">
-      <div class="metric-icon">👥</div>
-      <div class="metric-label">Số nhân viên</div>
-      <div class="metric-val">10</div>
-      <div class="metric-delta" style="color:var(--text2)">WD: 9.5 ngày</div>
-    </div>
-  </div>
+  <div class="metrics" id="metricCards"></div>
 
-  <!-- Today Section - nổi bật ngay sau metric cards -->
-  <div id="todaySection" style="display:none;margin-bottom:20px;">
-    <div style="background:#fff;border:2px solid #FAC775;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(186,117,23,0.10);">
-      <div style="background:linear-gradient(90deg,#fff8ec,#fdf6e3);padding:14px 20px;border-bottom:1.5px solid #FAC775;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+  <!-- TODAY TABLE -->
+  <div id="todaySection" style="display:none;">
+    <div class="today-card">
+      <div class="today-head">
         <div style="display:flex;align-items:center;gap:10px;">
           <span style="font-size:22px;">📅</span>
           <div>
@@ -174,90 +114,80 @@
             <div style="font-size:12px;color:#633806;margin-top:1px;">Chưa tính vào MTD &nbsp;·&nbsp; KPI MTD tính đến hôm qua</div>
           </div>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;">
-          <span style="background:#e8f5e2;border:1px solid #C0DD97;border-radius:6px;padding:3px 10px;color:#27500A;font-weight:600;">🔥 Đạt cả KN &amp; Phút</span>
-          <span style="background:#fff8ec;border:1px solid #FAC775;border-radius:6px;padding:3px 10px;color:#633806;font-weight:600;">⚡ Đạt một chỉ tiêu</span>
+        <div class="today-badges">
+          <span style="background:#e8f5e2;border:1px solid #C0DD97;border-radius:6px;padding:3px 10px;color:#27500A;font-weight:600;">🔥 Đạt cả 3</span>
+          <span style="background:#fff8ec;border:1px solid #FAC775;border-radius:6px;padding:3px 10px;color:#633806;font-weight:600;">⚡ Đạt một phần</span>
           <span style="background:#eef3ff;border:1px solid #B5D4F4;border-radius:6px;padding:3px 10px;color:#0C447C;font-weight:600;">💪 Cần cố thêm</span>
         </div>
       </div>
-      <div style="padding:0;">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Tên</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Call</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Target Call</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Kết nối</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Target KN</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Còn thiếu KN</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Talktime</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Target Phút</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Còn thiếu Phút</th>
-                <th style="text-align:center;background:#fdf6e3;border-bottom:2px solid #FAC775;">Trạng thái</th>
-              </tr>
-            </thead>
-            <tbody id="todayBody"></tbody>
-          </table>
-        </div>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>Tên</th>
+              <th class="num">Call</th>
+              <th class="num">Target Call</th>
+              <th class="num">Kết nối</th>
+              <th class="num">Target KN</th>
+              <th class="num">Còn thiếu KN</th>
+              <th class="num">Talktime</th>
+              <th class="num">Target Phút</th>
+              <th class="num">Còn thiếu Phút</th>
+              <th style="text-align:center;">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody id="todayBody"></tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- Charts Row 1 -->
+  <!-- Charts -->
   <div class="chart-row">
     <div class="card">
       <div class="card-title">Cuộc gọi theo ngày</div>
-      <div class="legend"><span><span class="ldot" style="background:var(--blue)"></span>Call/ngày</span></div>
-      <div style="position:relative;height:200px;"><canvas id="callDayChart" role="img" aria-label="Call theo ngày" width="668" height="250" style="display: block; box-sizing: border-box; height: 200px; width: 534px;"></canvas></div>
+      <div class="leg"><span><span class="ldot" style="background:var(--blue)"></span>Call/ngày</span></div>
+      <div style="position:relative;height:200px;"><canvas id="callChart"></canvas></div>
     </div>
     <div class="card">
       <div class="card-title">Kết nối theo ngày</div>
-      <div class="legend"><span><span class="ldot" style="background:var(--green)"></span>Kết nối/ngày</span></div>
-      <div style="position:relative;height:200px;"><canvas id="connectDayChart" role="img" aria-label="Kết nối theo ngày" width="668" height="250" style="display: block; box-sizing: border-box; height: 200px; width: 534px;"></canvas></div>
+      <div class="leg"><span><span class="ldot" style="background:var(--green)"></span>Kết nối/ngày</span></div>
+      <div style="position:relative;height:200px;"><canvas id="connectChart"></canvas></div>
     </div>
   </div>
 
-  <!-- Agent comparison chart -->
+  <!-- Agent Chart -->
   <div class="card" style="margin-bottom:16px;">
     <div class="card-title">So sánh thực hiện vs KPI theo nhân viên</div>
     <div class="tabs">
-      <button class="tab active" onclick="switchAgent(&#39;call&#39;,this)">Cuộc gọi</button>
-      <button class="tab" onclick="switchAgent(&#39;connect&#39;,this)">Kết nối</button>
-      <button class="tab" onclick="switchAgent(&#39;talk&#39;,this)">Talktime</button>
+      <button class="tab active" onclick="switchAgent('call',this)">Cuộc gọi</button>
+      <button class="tab" onclick="switchAgent('connect',this)">Kết nối</button>
+      <button class="tab" onclick="switchAgent('talk',this)">Talktime</button>
     </div>
-    <div class="legend" id="agentLegend">
+    <div class="leg">
       <span><span class="ldot" style="background:var(--blue)"></span>Thực hiện</span>
-      <span><span class="ldot" style="background:var(--red); opacity:.6;"></span>KPI mục tiêu</span>
+      <span><span class="ldot" style="background:var(--red);opacity:.6;"></span>KPI mục tiêu</span>
     </div>
-    <div style="position:relative;height:260px;"><canvas id="agentChart" role="img" aria-label="So sánh nhân viên" width="1403" height="325" style="display: block; box-sizing: border-box; height: 260px; width: 1122px;"></canvas></div>
+    <div style="position:relative;height:260px;"><canvas id="agentChart"></canvas></div>
   </div>
 
-
-
-  <!-- Detail Table -->
+  <!-- Detail Tables -->
   <div class="card">
     <div class="card-title">Bảng chi tiết</div>
-    <div class="table-tabs">
-      <button class="ttab active" onclick="switchTable(&#39;mtd&#39;,this)">Tổng tháng (MTD)</button>
-      <button class="ttab" onclick="switchTable(&#39;daily&#39;,this)">Chi tiết theo ngày</button>
+    <div class="ttabs">
+      <button class="ttab active" onclick="switchTable('mtd',this)">Tổng tháng (MTD)</button>
+      <button class="ttab" onclick="switchTable('daily',this)">Chi tiết theo ngày</button>
     </div>
 
-    <!-- MTD Table -->
-    <div class="tbl-section active" id="tbl-mtd">
+    <!-- MTD -->
+    <div class="tsec active" id="tbl-mtd">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
         <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;">Màu hàng:</span>
-        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;background:#f0f9e8;border:1px solid #C0DD97;border-radius:6px;padding:4px 10px;color:#27500A;font-weight:600;">
-          <span style="width:10px;height:10px;border-radius:50%;background:#639922;flex-shrink:0;"></span>Đạt cả KN lẫn Phút
-        </span>
-        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;background:#fdf6e3;border:1px solid #FAC775;border-radius:6px;padding:4px 10px;color:#633806;font-weight:600;">
-          <span style="width:10px;height:10px;border-radius:50%;background:#BA7517;flex-shrink:0;"></span>Gần đạt — cố thêm chút nữa!
-        </span>
-        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;background:#eef3ff;border:1px solid #B5D4F4;border-radius:6px;padding:4px 10px;color:#0C447C;font-weight:600;">
-          <span style="width:10px;height:10px;border-radius:50%;background:#378ADD;flex-shrink:0;"></span>Cần cải thiện nhiều
-        </span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;background:#e8f5e2;border:1px solid #C0DD97;border-radius:6px;padding:4px 10px;color:#27500A;font-weight:600;"><span style="width:10px;height:10px;border-radius:50%;background:#639922;flex-shrink:0;"></span>Đạt cả KN lẫn Phút</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;background:#fff8ec;border:1px solid #FAC775;border-radius:6px;padding:4px 10px;color:#633806;font-weight:600;"><span style="width:10px;height:10px;border-radius:50%;background:#BA7517;flex-shrink:0;"></span>Gần đạt — cố thêm!</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;background:#eef3ff;border:1px solid #B5D4F4;border-radius:6px;padding:4px 10px;color:#0C447C;font-weight:600;"><span style="width:10px;height:10px;border-radius:50%;background:#378ADD;flex-shrink:0;"></span>Cần cải thiện nhiều</span>
       </div>
-      <div class="table-wrap">
+      <div class="tw">
         <table>
           <thead>
             <tr>
@@ -272,188 +202,27 @@
               <th class="num" rowspan="2" style="vertical-align:bottom;">KPI Phút còn lại</th>
               <th class="num" rowspan="2" style="vertical-align:bottom;">Tỉ lệ KN</th>
               <th class="num" rowspan="2" style="vertical-align:bottom;">Tỉ lệ Phút</th>
-              <th colspan="2" style="text-align:center;background:var(--surface2);padding:4px 8px;font-size:10px;letter-spacing:.06em;">TRẠNG THÁI</th>
+              <th colspan="2" style="text-align:center;font-size:10px;letter-spacing:.06em;">TRẠNG THÁI</th>
             </tr>
             <tr>
-              <th style="text-align:center;font-size:11px;background:var(--surface2);">Kết nối</th>
-              <th style="text-align:center;font-size:11px;background:var(--surface2);">Phút</th>
+              <th style="text-align:center;font-size:11px;">Kết nối</th>
+              <th style="text-align:center;font-size:11px;">Phút</th>
             </tr>
           </thead>
-          <tbody id="mtdBody"><tr class="row-ok">
-      <td class="bold">Anh Thư <span title="Dẫn đầu Talktime" style="font-size:14px;">🏆</span></td>
-      <td class="num">1.509</td>
-      <td class="num">383</td>
-      <td class="num">502</td>
-      <td class="num">137.2</td>
-      <td class="num">34.8</td>
-      <td class="num">45.6</td>
-      <td class="num kpi-pos">+3</td>
-      <td class="num kpi-pos">+27.0</td>
-      <td class="num">101%</td>
-      <td class="num">106%</td>
-      <td style="text-align:center;"><span class="badge badge-g">✓ Đạt</span></td>
-      <td style="text-align:center;"><span class="badge badge-g">✓ Đạt</span></td>
-    </tr><tr class="row-warn">
-      <td class="bold">Bích Hòa</td>
-      <td class="num">1.286</td>
-      <td class="num">380</td>
-      <td class="num">324</td>
-      <td class="num">116.9</td>
-      <td class="num">34.5</td>
-      <td class="num">29.5</td>
-      <td class="num kpi-pos">0</td>
-      <td class="num kpi-neg">-151.0</td>
-      <td class="num">100%</td>
-      <td class="num">68%</td>
-      <td style="text-align:center;"><span class="badge badge-g">✓ Đạt</span></td>
-      <td style="text-align:center;"><span class="badge badge-r">✗ Chưa đạt</span></td>
-    </tr><tr class="row-warn">
-      <td class="bold">Châu Thanh</td>
-      <td class="num">1.459</td>
-      <td class="num">385</td>
-      <td class="num">337</td>
-      <td class="num">132.6</td>
-      <td class="num">35.0</td>
-      <td class="num">30.6</td>
-      <td class="num kpi-pos">+5</td>
-      <td class="num kpi-neg">-138.0</td>
-      <td class="num">101%</td>
-      <td class="num">71%</td>
-      <td style="text-align:center;"><span class="badge badge-g">✓ Đạt</span></td>
-      <td style="text-align:center;"><span class="badge badge-r">✗ Chưa đạt</span></td>
-    </tr><tr class="row-warn">
-      <td class="bold">Hồ Như Ngọc</td>
-      <td class="num">1.034</td>
-      <td class="num">400</td>
-      <td class="num">380</td>
-      <td class="num">94.0</td>
-      <td class="num">36.4</td>
-      <td class="num">34.5</td>
-      <td class="num kpi-pos">+20</td>
-      <td class="num kpi-neg">-95.0</td>
-      <td class="num">105%</td>
-      <td class="num">80%</td>
-      <td style="text-align:center;"><span class="badge badge-g">✓ Đạt</span></td>
-      <td style="text-align:center;"><span class="badge badge-r">✗ Chưa đạt</span></td>
-    </tr><tr class="row-warn">
-      <td class="bold">Hồ Thị Diệu <span title="Dẫn đầu Kết Nối" style="font-size:14px;">👑</span></td>
-      <td class="num">1.746</td>
-      <td class="num">546</td>
-      <td class="num">451</td>
-      <td class="num">158.7</td>
-      <td class="num">49.6</td>
-      <td class="num">41.0</td>
-      <td class="num kpi-pos">+166</td>
-      <td class="num kpi-neg">-24.0</td>
-      <td class="num">144%</td>
-      <td class="num">95%</td>
-      <td style="text-align:center;"><span class="badge badge-g">✓ Đạt</span></td>
-      <td style="text-align:center;"><span class="badge badge-y">~ Gần đạt</span></td>
-    </tr><tr class="row-bad">
-      <td class="bold">Hồng Huyền</td>
-      <td class="num">1.134</td>
-      <td class="num">325</td>
-      <td class="num">270</td>
-      <td class="num">103.1</td>
-      <td class="num">29.5</td>
-      <td class="num">24.5</td>
-      <td class="num kpi-neg">-55</td>
-      <td class="num kpi-neg">-205.0</td>
-      <td class="num">86%</td>
-      <td class="num">57%</td>
-      <td style="text-align:center;"><span class="badge badge-r">✗ Chưa đạt</span></td>
-      <td style="text-align:center;"><span class="badge badge-r">✗ Chưa đạt</span></td>
-    </tr><tr class="row-warn">
-      <td class="bold">Hương Lan</td>
-      <td class="num">1.421</td>
-      <td class="num">383</td>
-      <td class="num">246</td>
-      <td class="num">129.2</td>
-      <td class="num">34.8</td>
-      <td class="num">22.4</td>
-      <td class="num kpi-pos">+3</td>
-      <td class="num kpi-neg">-229.0</td>
-      <td class="num">101%</td>
-      <td class="num">52%</td>
-      <td style="text-align:center;"><span class="badge badge-g">✓ Đạt</span></td>
-      <td style="text-align:center;"><span class="badge badge-r">✗ Chưa đạt</span></td>
-    </tr><tr class="row-warn">
-      <td class="bold">Lâm Vũ</td>
-      <td class="num">1.394</td>
-      <td class="num">472</td>
-      <td class="num">450</td>
-      <td class="num">126.7</td>
-      <td class="num">42.9</td>
-      <td class="num">40.9</td>
-      <td class="num kpi-pos">+92</td>
-      <td class="num kpi-neg">-25.0</td>
-      <td class="num">124%</td>
-      <td class="num">95%</td>
-      <td style="text-align:center;"><span class="badge badge-g">✓ Đạt</span></td>
-      <td style="text-align:center;"><span class="badge badge-y">~ Gần đạt</span></td>
-    </tr><tr class="row-warn">
-      <td class="bold">Như Ngọc</td>
-      <td class="num">1.256</td>
-      <td class="num">330</td>
-      <td class="num">239</td>
-      <td class="num">114.2</td>
-      <td class="num">30.0</td>
-      <td class="num">21.7</td>
-      <td class="num kpi-neg">-50</td>
-      <td class="num kpi-neg">-236.0</td>
-      <td class="num">87%</td>
-      <td class="num">50%</td>
-      <td style="text-align:center;"><span class="badge badge-y">~ Gần đạt</span></td>
-      <td style="text-align:center;"><span class="badge badge-r">✗ Chưa đạt</span></td>
-    </tr><tr class="row-bad">
-      <td class="bold">Thục Nghi</td>
-      <td class="num">748</td>
-      <td class="num">299</td>
-      <td class="num">275</td>
-      <td class="num">68.0</td>
-      <td class="num">27.2</td>
-      <td class="num">25.0</td>
-      <td class="num kpi-neg">-81</td>
-      <td class="num kpi-neg">-200.0</td>
-      <td class="num">79%</td>
-      <td class="num">58%</td>
-      <td style="text-align:center;"><span class="badge badge-r">✗ Chưa đạt</span></td>
-      <td style="text-align:center;"><span class="badge badge-r">✗ Chưa đạt</span></td>
-    </tr><tr class="row-total" style="font-weight:600;">
-    <td class="bold">TỔNG / TB</td>
-    <td class="num">12.987</td>
-    <td class="num">3903</td>
-    <td class="num">3474</td>
-    <td class="num">118.1</td>
-    <td class="num">35.5</td>
-    <td class="num">31.6</td>
-    <td class="num kpi-pos">+103</td>
-    <td class="num kpi-neg">-1276.0</td>
-    <td class="num">103%</td>
-    <td class="num">73%</td>
-    <td></td>
-    <td></td>
-  </tr></tbody>
+          <tbody id="mtdBody"></tbody>
         </table>
       </div>
-    </div>
-    <div style="margin-top:14px;text-align:center;padding:13px 20px;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:0.05em;background:linear-gradient(90deg,#e8f5e2,#fff8ec,#eef3ff,#fff8ec,#e8f5e2);color:#2d6b14;border:1px solid #C0DD97;">
-      🔥 CỐ LÊN! SẮP TỚI RỒI! SẮP TỚI RỒI! 🔥
+      <div class="cheer">🔥 CỐ LÊN! SẮP TỚI RỒI! SẮP TỚI RỒI! 🔥</div>
     </div>
 
-    <!-- Daily Table -->
-    <div class="tbl-section" id="tbl-daily">
+    <!-- Daily -->
+    <div class="tsec" id="tbl-daily">
       <div class="tabs" style="margin-bottom:10px;">
-        <button class="tab active" onclick="switchDailyMetric(&#39;call&#39;,this)">Cuộc gọi</button>
-        <button class="tab" onclick="switchDailyMetric(&#39;connect&#39;,this)">Kết nối</button>
-        <button class="tab" onclick="switchDailyMetric(&#39;talk&#39;,this)">Talktime</button>
+        <button class="tab active" onclick="switchDaily('call',this)">Cuộc gọi</button>
+        <button class="tab" onclick="switchDaily('connect',this)">Kết nối</button>
+        <button class="tab" onclick="switchDaily('talk',this)">Talktime</button>
       </div>
-      <div class="table-wrap">
-        <table id="dailyTable">
-          <thead id="dailyHead"><tr><th>Tên</th><th class="num">04/05</th><th class="num">05/05</th><th class="num">06/05</th><th class="num">07/05</th><th class="num">08/05</th><th class="num">09/05</th><th class="num">11/05</th><th class="num">12/05</th><th class="num">13/05</th><th class="num">14/05</th><th class="num">15/05</th><th class="num bold">Tổng</th></tr></thead>
-          <tbody id="dailyBody"><tr><td class="bold">Anh Thư</td><td class="num">60</td><td class="num">112</td><td class="num">102</td><td class="num">56</td><td class="num">496</td><td class="num">108</td><td class="num">112</td><td class="num">139</td><td class="num">117</td><td class="num">102</td><td class="num">105</td><td class="num bold">1509</td></tr><tr><td class="bold">Bích Hòa</td><td class="num">87</td><td class="num">71</td><td class="num">133</td><td class="num">45</td><td class="num">416</td><td class="num">89</td><td class="num">49</td><td class="num">99</td><td class="num">110</td><td class="num">93</td><td class="num">94</td><td class="num bold">1286</td></tr><tr><td class="bold">Châu Thanh</td><td class="num">58</td><td class="num">61</td><td class="num">92</td><td class="num">32</td><td class="num">497</td><td class="num">125</td><td class="num">108</td><td class="num">148</td><td class="num">115</td><td class="num">122</td><td class="num">101</td><td class="num bold">1459</td></tr><tr><td class="bold">Hồ Như Ngọc</td><td class="num">75</td><td class="num">85</td><td class="num">83</td><td class="num">36</td><td class="num">322</td><td class="num">95</td><td class="num">64</td><td class="num">76</td><td class="num">73</td><td class="num">80</td><td class="num">45</td><td class="num bold">1034</td></tr><tr><td class="bold">Hồ Thị Diệu</td><td class="num">114</td><td class="num">94</td><td class="num">92</td><td class="num">44</td><td class="num">512</td><td class="num">130</td><td class="num">84</td><td class="num">242</td><td class="num">164</td><td class="num">136</td><td class="num">134</td><td class="num bold">1746</td></tr><tr><td class="bold">Hồng Huyền</td><td class="num">23</td><td class="num">76</td><td class="num">102</td><td class="num">42</td><td class="num">296</td><td class="num">51</td><td class="num">90</td><td class="num">174</td><td class="num">78</td><td class="num">88</td><td class="num">114</td><td class="num bold">1134</td></tr><tr><td class="bold">Hương Lan</td><td class="num">79</td><td class="num">79</td><td class="num">151</td><td class="num">46</td><td class="num">475</td><td class="num">90</td><td class="num">84</td><td class="num">89</td><td class="num">118</td><td class="num">122</td><td class="num">88</td><td class="num bold">1421</td></tr><tr><td class="bold">Lâm Vũ</td><td class="num">73</td><td class="num">123</td><td class="num">100</td><td class="num">51</td><td class="num">444</td><td class="num">50</td><td class="num">97</td><td class="num">160</td><td class="num">110</td><td class="num">92</td><td class="num">94</td><td class="num bold">1394</td></tr><tr><td class="bold">Như Ngọc</td><td class="num"></td><td class="num">56</td><td class="num">100</td><td class="num">49</td><td class="num">418</td><td class="num">104</td><td class="num">67</td><td class="num">130</td><td class="num">114</td><td class="num">141</td><td class="num">77</td><td class="num bold">1256</td></tr><tr><td class="bold">Thục Nghi</td><td class="num"></td><td class="num"></td><td class="num">15</td><td class="num">200</td><td class="num">47</td><td class="num">77</td><td class="num">101</td><td class="num">95</td><td class="num">130</td><td class="num">83</td><td class="num"></td><td class="num bold">748</td></tr><tr style="background:var(--surface2);font-weight:600;"><td>TỔNG</td><td class="num">569</td><td class="num">757</td><td class="num">970</td><td class="num">601</td><td class="num">3923</td><td class="num">919</td><td class="num">856</td><td class="num">1352</td><td class="num">1129</td><td class="num">1059</td><td class="num">852</td><td class="num">12987</td></tr></tbody>
-        </table>
-      </div>
+      <div class="tw"><table><thead id="dailyHead"></thead><tbody id="dailyBody"></tbody></table></div>
     </div>
   </div>
 </div>
@@ -461,101 +230,53 @@
 <!-- Modal -->
 <div class="modal-bg" id="modalBg" onclick="bgClose(event)">
   <div class="modal">
-    <div class="modal-header">
-      <h2>Cập nhật raw data</h2>
-      <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-hd">
+      <h2>Cập nhật dữ liệu</h2>
+      <button class="modal-x" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body">
-      <div class="notice">
-        <b>Hướng dẫn nhập liệu:</b><br>
-        Dán dữ liệu từ Excel/Google Sheets vào ô tương ứng. Mỗi dòng là một nhân viên, các cột cách nhau bởi <b>Tab</b> (copy thẳng từ bảng tính là được).<br>
-        Định dạng: <b>Tên | Ngày1 | Ngày2 | ...</b> (hàng đầu tiên là header ngày, bỏ cột Tên đi).
+      <div class="notice"><b>Hướng dẫn:</b> Dán thẳng từ Excel/Google Sheets. Hàng đầu = header ngày. Từ hàng 2 = dữ liệu nhân viên. Các cột cách nhau bằng Tab.</div>
+
+      <!-- Config -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:flex-end;">
+        <div><div class="fl">WD</div><input class="fi" id="wdInput" type="number" step="0.5" value="9.5" style="width:70px;"></div>
+        <div style="flex:1;min-width:160px;"><div class="fl">Kỳ báo cáo</div><input class="fi" id="periodInput" type="text" value="01/05 – 15/05/2025" style="width:100%;"></div>
+        <div><div class="fl">KPI Kết nối</div><input class="fi" id="kpiKN" type="number" value="380" style="width:80px;"></div>
+        <div><div class="fl">KPI Phút</div><input class="fi" id="kpiPhut" type="number" value="475" style="width:80px;"></div>
+        <div><div class="fl">KPI Call/ngày</div><input class="fi" id="kpiCall" type="number" value="40" style="width:80px;"></div>
       </div>
 
-      <div class="wd-row">
-        <div>
-          <div class="field-label">WD (Ngày làm việc)</div>
-          <input class="wd-input" id="wdInput" type="number" step="0.5" value="9.5">
-        </div>
-        <div style="flex:1;">
-          <div class="field-label">Kỳ báo cáo</div>
-          <input class="period-input" id="periodInput" type="text" value="01/05 – 15/05/2025">
-        </div>
-        <div>
-          <div class="field-label">KPI Kết nối</div>
-          <input class="wd-input" id="kpiKN" type="number" value="380">
-        </div>
-        <div>
-          <div class="field-label">KPI Phút</div>
-          <input class="wd-input" id="kpiPhut" type="number" value="475">
-        </div>
-        <div>
-          <div class="field-label">KPI Call/ngày</div>
-          <input class="wd-input" id="kpiCall" type="number" value="40">
-        </div>
+      <!-- MTD Data -->
+      <div style="margin-bottom:6px;font-size:13px;font-weight:600;color:var(--text);">📊 Dữ liệu tổng tháng (MTD)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
+        <div><div class="fl">CALL theo ngày</div><div class="fh">Hàng 1: header ngày | Hàng 2+: nhân viên</div><textarea id="rawCall" rows="12"></textarea></div>
+        <div><div class="fl">KẾT NỐI theo ngày</div><div class="fh">Cùng định dạng như CALL</div><textarea id="rawConnect" rows="12"></textarea></div>
+        <div><div class="fl">TALKTIME theo ngày</div><div class="fh">Cùng định dạng như CALL</div><textarea id="rawTalk" rows="12"></textarea></div>
       </div>
 
-      <div class="field-group">
-        <div class="field-label">CALL – Dữ liệu theo ngày</div>
-        <div class="field-hint">Hàng đầu = header (Tên 	05/01/2025 	05/02/2025 ...). Từ hàng 2 = dữ liệu nhân viên.</div>
-        <textarea id="rawCall" rows="13" placeholder="Tên	05/04/2025	05/05/2025	...
-OTC - Anh Thư	60	112	...
-OTC - Bích Hòa	87	71	..."></textarea>
-      </div>
+      <hr class="sep">
 
-      <div class="field-group">
-        <div class="field-label">KẾT NỐI – Dữ liệu theo ngày</div>
-        <div class="field-hint">Cùng định dạng như CALL</div>
-        <textarea id="rawConnect" rows="13" placeholder="Tên	05/04/2025	05/05/2025	...
-OTC - Anh Thư	24	40	..."></textarea>
+      <!-- Today Data -->
+      <div class="today-hint"><b>📅 Số liệu hôm nay</b> — Nhập riêng, không cộng vào MTD. Định dạng: <b>Tên [Tab] Số</b></div>
+      <div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:14px;">
+        <div><div class="fl">Ngày hôm nay</div><input class="fi" id="todayDate" type="text" placeholder="19/05/2025" style="width:130px;"></div>
       </div>
-
-      <div class="field-group">
-        <div class="field-label">TALKTIME – Dữ liệu theo ngày</div>
-        <div class="field-hint">Cùng định dạng như CALL</div>
-        <textarea id="rawTalk" rows="13" placeholder="Tên	05/04/2025	05/05/2025	...
-OTC - Anh Thư	45	65	..."></textarea>
-      </div>
-
-      <div style="border-top:2px dashed var(--border2);margin:8px 0 18px;"></div>
-      <div style="background:#fff8ec;border:1px solid #FAC775;border-radius:8px;padding:10px 14px;font-size:13px;color:#633806;margin-bottom:14px;">
-        <b>📅 Số liệu hôm nay (không cộng vào tổng MTD)</b><br>
-        Nhập số liệu ngày hiện tại để xem riêng. Định dạng: <b>Tên [Tab] Số</b> — mỗi dòng một nhân viên.
-      </div>
-      <div class="wd-row" style="margin-bottom:14px;">
-        <div>
-          <div class="field-label">Ngày hôm nay</div>
-          <input class="period-input" id="todayDate" type="text" placeholder="18/05/2025" style="width:130px;">
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-        <div class="field-group" style="margin:0;">
-          <div class="field-label">CALL hôm nay</div>
-          <textarea id="todayRawCall" rows="12" placeholder="OTC - Anh Thư	60
-OTC - Bích Hòa	87"></textarea>
-        </div>
-        <div class="field-group" style="margin:0;">
-          <div class="field-label">KẾT NỐI hôm nay</div>
-          <textarea id="todayRawConnect" rows="12" placeholder="OTC - Anh Thư	24
-OTC - Bích Hòa	40"></textarea>
-        </div>
-        <div class="field-group" style="margin:0;">
-          <div class="field-label">TALKTIME hôm nay</div>
-          <textarea id="todayRawTalk" rows="12" placeholder="OTC - Anh Thư	45
-OTC - Bích Hòa	27"></textarea>
-        </div>
+      <div class="grid3">
+        <div><div class="fl">CALL hôm nay</div><textarea id="todayRawCall" rows="12" placeholder="OTC - Anh Thư&#9;60&#10;OTC - Bích Hòa&#9;87"></textarea></div>
+        <div><div class="fl">KẾT NỐI hôm nay</div><textarea id="todayRawConnect" rows="12" placeholder="OTC - Anh Thư&#9;24&#10;OTC - Bích Hòa&#9;40"></textarea></div>
+        <div><div class="fl">TALKTIME hôm nay</div><textarea id="todayRawTalk" rows="12" placeholder="OTC - Anh Thư&#9;45&#10;OTC - Bích Hòa&#9;27"></textarea></div>
       </div>
     </div>
-    <div class="modal-footer">
+    <div class="modal-ft">
       <button class="btn-cancel" onclick="closeModal()">Hủy</button>
-      <button class="btn-primary" onclick="applyData()">✓ Áp dụng &amp; cập nhật</button>
+      <button class="btn-ok" onclick="applyData()">✓ Áp dụng & cập nhật</button>
     </div>
   </div>
 </div>
 
 <script>
-// ─── DEFAULT DATA ────────────────────────────────────────────────────────────
-const DEFAULT_CALL = `Tên\t05/04/2025\t05/05/2025\t05/06/2025\t05/07/2025\t05/08/2025\t05/09/2025\t05/11/2025\t05/12/2025\t05/13/2025\t05/14/2025\t05/15/2025
+// ── DEFAULT DATA ──────────────────────────────────────────────────────────────
+const DC = `Tên\t05/04/2025\t05/05/2025\t05/06/2025\t05/07/2025\t05/08/2025\t05/09/2025\t05/11/2025\t05/12/2025\t05/13/2025\t05/14/2025\t05/15/2025
 OTC - Anh Thư\t60\t112\t102\t56\t496\t108\t112\t139\t117\t102\t105
 OTC - Bích Hòa\t87\t71\t133\t45\t416\t89\t49\t99\t110\t93\t94
 OTC - Châu Thanh\t58\t61\t92\t32\t497\t125\t108\t148\t115\t122\t101
@@ -567,7 +288,7 @@ OTC - Lâm Vũ\t73\t123\t100\t51\t444\t50\t97\t160\t110\t92\t94
 OTC - Như Ngọc\t0\t56\t100\t49\t418\t104\t67\t130\t114\t141\t77
 OTC - Thục Nghi\t0\t0\t15\t200\t47\t77\t101\t95\t130\t83`;
 
-const DEFAULT_CONNECT = `Tên\t05/04/2025\t05/05/2025\t05/06/2025\t05/07/2025\t05/08/2025\t05/09/2025\t05/11/2025\t05/12/2025\t05/13/2025\t05/14/2025\t05/15/2025
+const DK = `Tên\t05/04/2025\t05/05/2025\t05/06/2025\t05/07/2025\t05/08/2025\t05/09/2025\t05/11/2025\t05/12/2025\t05/13/2025\t05/14/2025\t05/15/2025
 OTC - Anh Thư\t24\t40\t41\t21\t33\t29\t36\t44\t38\t38\t39
 OTC - Bích Hòa\t40\t35\t42\t18\t40\t20\t33\t42\t35\t35\t40
 OTC - Châu Thanh\t17\t25\t31\t9\t49\t44\t53\t52\t33\t35\t37
@@ -579,7 +300,7 @@ OTC - Lâm Vũ\t31\t47\t50\t19\t32\t12\t79\t60\t50\t50\t42
 OTC - Như Ngọc\t0\t17\t33\t22\t43\t22\t40\t42\t44\t44\t23
 OTC - Thục Nghi\t1\t6\t8\t31\t11\t55\t40\t51\t53\t43`;
 
-const DEFAULT_TALK = `Tên\t05/04/2025\t05/05/2025\t05/06/2025\t05/07/2025\t05/08/2025\t05/09/2025\t05/11/2025\t05/12/2025\t05/13/2025\t05/14/2025\t05/15/2025
+const DT = `Tên\t05/04/2025\t05/05/2025\t05/06/2025\t05/07/2025\t05/08/2025\t05/09/2025\t05/11/2025\t05/12/2025\t05/13/2025\t05/14/2025\t05/15/2025
 OTC - Anh Thư\t45\t65\t54\t33\t37\t31\t47\t36\t48\t48\t58
 OTC - Bích Hòa\t27\t40\t31\t18\t38\t14\t26\t32\t34\t34\t30
 OTC - Châu Thanh\t17\t24\t46\t7\t41\t35\t34\t45\t29\t30\t29
@@ -591,441 +312,253 @@ OTC - Lâm Vũ\t36\t43\t48\t15\t44\t27\t56\t47\t51\t51\t32
 OTC - Như Ngọc\t0\t5\t23\t11\t31\t21\t30\t29\t35\t35\t19
 OTC - Thục Nghi\t0\t11\t0\t7\t42\t17\t50\t53\t46\t49`;
 
-// ─── STATE ───────────────────────────────────────────────────────────────────
-let WD = 9.5, KPI_KN = 380, KPI_PHUT = 475, KPI_CALL_DAY = 40;
-let parsedCall = {}, parsedConnect = {}, parsedTalk = {};
-let todayCall = {}, todayConnect = {}, todayTalk = {}, todayDate = '';
-let days = [], agents = [];
-let charts = {};
-let currentAgentMetric = 'call', currentDailyMetric = 'call';
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let WD=9.5, KPI_KN=380, KPI_PHUT=475, KPI_CALL=40;
+let pCall={}, pConnect={}, pTalk={};
+let tCall={}, tConnect={}, tTalk={}, tDate='';
+let days=[], agents=[];
+let charts={}, curAgent='call', curDaily='call';
 
-// ─── PARSE ───────────────────────────────────────────────────────────────────
-function parseTSV(raw) {
-  const lines = raw.trim().split('\n').filter(l => l.trim());
-  if (lines.length < 2) return { days: [], agents: {}, agentNames: [] };
-  const headers = lines[0].split('\t').map(s => s.trim());
-  // Ghi nhớ index cột gốc để không bị lệch khi có cột header trống
-  const dayColIndices = [];
-  const dayHeaders = [];
-  for (let c = 1; c < headers.length; c++) {
-    if (headers[c]) { dayHeaders.push(headers[c]); dayColIndices.push(c); }
+// ── PARSE ─────────────────────────────────────────────────────────────────────
+function parseTSV(raw){
+  const lines=raw.trim().split('\n').filter(l=>l.trim());
+  if(lines.length<2) return {days:[],agents:{},names:[]};
+  const hdrs=lines[0].split('\t').map(s=>s.trim());
+  const colIdx=[], dayHdrs=[];
+  for(let c=1;c<hdrs.length;c++) if(hdrs[c]){dayHdrs.push(hdrs[c]);colIdx.push(c);}
+  const names=[], agents={};
+  for(let i=1;i<lines.length;i++){
+    const cols=lines[i].split('\t').map(s=>s.trim());
+    if(!cols[0]) continue;
+    const n=cols[0].replace('OTC - ','').trim();
+    names.push(n);
+    agents[n]=colIdx.map(ci=>parseFloat(cols[ci])||0);
   }
-  const agentNames = [];
-  const agents = {};
-  for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split('\t').map(s => s.trim());
-    if (!cols[0]) continue;
-    const name = cols[0].replace('OTC - ', '').trim();
-    agentNames.push(name);
-    // Đọc đúng vị trí cột theo index gốc, tránh lệch khi có cột trống
-    agents[name] = dayColIndices.map(ci => parseFloat(cols[ci]) || 0);
-  }
-  return { days: dayHeaders, agents, agentNames };
+  return {days:dayHdrs,agents,names};
 }
 
-function parseTodayTSV(raw) {
-  if (!raw.trim()) return {};
-  const result = {};
-  raw.trim().split('\n').forEach(line => {
-    const cols = line.split('\t').map(s => s.trim());
-    if (!cols[0]) return;
-    const name = cols[0].replace('OTC - ', '').trim();
-    result[name] = parseFloat(cols[1]) || 0;
+function parseLine(raw){
+  if(!raw.trim()) return {};
+  const r={};
+  raw.trim().split('\n').forEach(line=>{
+    const c=line.split('\t').map(s=>s.trim());
+    if(!c[0]) return;
+    r[c[0].replace('OTC - ','').trim()]=parseFloat(c[1])||0;
   });
-  return result;
+  return r;
 }
 
-function buildState(rawCall, rawConnect, rawTalk) {
-  const pc = parseTSV(rawCall);
-  const pk = parseTSV(rawConnect);
-  const pt = parseTSV(rawTalk);
-  days = pc.days.length ? pc.days : (pk.days.length ? pk.days : pt.days);
-  agents = pc.agentNames.length ? pc.agentNames : pk.agentNames;
-  parsedCall = pc.agents;
-  parsedConnect = pk.agents;
-  parsedTalk = pt.agents;
+function build(rc,rk,rt){
+  const pc=parseTSV(rc), pk=parseTSV(rk), pt=parseTSV(rt);
+  days=pc.days.length?pc.days:(pk.days.length?pk.days:pt.days);
+  agents=pc.names.length?pc.names:pk.names;
+  pCall=pc.agents; pConnect=pk.agents; pTalk=pt.agents;
 }
 
-function sum(arr) { return arr ? arr.reduce((a, b) => a + b, 0) : 0; }
+const sum=a=>a?a.reduce((s,v)=>s+v,0):0;
+const mtd=(a,d)=>sum(d[a]);
+const dayTotals=d=>days.map((_,i)=>agents.reduce((s,a)=>s+((d[a]&&d[a][i])||0),0));
+const shortD=d=>{const p=d.split('/');return p.length===3?`${p[1]}/${p[0]}`:d;};
 
-function getMTD(agent, data) { return sum(data[agent]); }
-
-function getDailyTotals(data) {
-  return days.map((_, di) =>
-    agents.reduce((s, a) => s + ((data[a] && data[a][di]) || 0), 0)
-  );
+// ── RENDER METRICS ────────────────────────────────────────────────────────────
+function renderMetrics(){
+  const tC=agents.reduce((s,a)=>s+mtd(a,pCall),0);
+  const tK=agents.reduce((s,a)=>s+mtd(a,pConnect),0);
+  const tP=agents.reduce((s,a)=>s+mtd(a,pTalk),0);
+  const rK=tK-agents.length*KPI_KN, rP=tP-agents.length*KPI_PHUT;
+  const avgC=days.length?(tC/days.length).toFixed(1):0;
+  document.getElementById('metricCards').innerHTML=`
+    <div class="mc"><div class="mc-icon">📞</div><div class="mc-label">Tổng cuộc gọi</div><div class="mc-val">${tC.toLocaleString()}</div><div class="mc-delta" style="color:var(--text2)">${avgC} call/ngày TB</div></div>
+    <div class="mc"><div class="mc-icon">🔗</div><div class="mc-label">Kết nối thành công</div><div class="mc-val">${tK.toLocaleString()}</div><div class="mc-delta ${rK>=0?'pos':'neg'}">${rK>=0?'▲ Vượt ':'▼ Còn thiếu '}${Math.abs(rK)} so KPI</div></div>
+    <div class="mc"><div class="mc-icon">⏱️</div><div class="mc-label">Talktime (phút)</div><div class="mc-val">${tP.toLocaleString()}</div><div class="mc-delta ${rP>=0?'pos':'neg'}">${rP>=0?'▲ Vượt ':'▼ Còn thiếu '}${Math.abs(rP)} so KPI</div></div>
+    <div class="mc"><div class="mc-icon">👥</div><div class="mc-label">Số nhân viên</div><div class="mc-val">${agents.length}</div><div class="mc-delta" style="color:var(--text2)">WD: ${WD} ngày</div></div>`;
 }
 
-// ─── RENDER ──────────────────────────────────────────────────────────────────
-function shortDay(d) {
-  // "05/04/2025" → "04/05"
-  const parts = d.split('/');
-  if (parts.length === 3) return `${parts[1]}/${parts[0]}`;
-  return d;
+// ── RENDER CHARTS ─────────────────────────────────────────────────────────────
+function mkChart(id,labels,datasets){
+  if(charts[id]) charts[id].destroy();
+  charts[id]=new Chart(document.getElementById(id),{type:'bar',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#888780'}},y:{grid:{color:'rgba(136,135,128,.15)'},ticks:{font:{size:10},color:'#888780'}}}}});
 }
 
-function renderMetrics() {
-  const totalCall = agents.reduce((s, a) => s + getMTD(a, parsedCall), 0);
-  const totalKN = agents.reduce((s, a) => s + getMTD(a, parsedConnect), 0);
-  const totalPhut = agents.reduce((s, a) => s + getMTD(a, parsedTalk), 0);
-  const totalKPIKN = agents.length * KPI_KN;
-  const totalKPIPhut = agents.length * KPI_PHUT;
-  const remKN = totalKN - totalKPIKN;
-  const remPhut = totalPhut - totalKPIPhut;
-  const avgCallDay = days.length ? (totalCall / days.length).toFixed(1) : 0;
-
-  const el = document.getElementById('metricCards');
-  el.innerHTML = `
-    <div class="metric">
-      <div class="metric-icon">📞</div>
-      <div class="metric-label">Tổng cuộc gọi</div>
-      <div class="metric-val">${totalCall.toLocaleString()}</div>
-      <div class="metric-delta" style="color:var(--text2)">${avgCallDay} call/ngày TB</div>
-    </div>
-    <div class="metric">
-      <div class="metric-icon">🔗</div>
-      <div class="metric-label">Kết nối thành công</div>
-      <div class="metric-val">${totalKN.toLocaleString()}</div>
-      <div class="metric-delta ${remKN >= 0 ? 'delta-pos' : 'delta-neg'}">${remKN >= 0 ? '▲ Vượt ' : '▼ Còn thiếu '}${Math.abs(remKN)} so KPI</div>
-    </div>
-    <div class="metric">
-      <div class="metric-icon">⏱️</div>
-      <div class="metric-label">Talktime (phút)</div>
-      <div class="metric-val">${totalPhut.toLocaleString()}</div>
-      <div class="metric-delta ${remPhut >= 0 ? 'delta-pos' : 'delta-neg'}">${remPhut >= 0 ? '▲ Vượt ' : '▼ Còn thiếu '}${Math.abs(remPhut)} so KPI</div>
-    </div>
-    <div class="metric">
-      <div class="metric-icon">👥</div>
-      <div class="metric-label">Số nhân viên</div>
-      <div class="metric-val">${agents.length}</div>
-      <div class="metric-delta" style="color:var(--text2)">WD: ${WD} ngày</div>
-    </div>
-  `;
+function renderCharts(){
+  const lbl=days.map(shortD);
+  mkChart('callChart',lbl,[{label:'Call',data:dayTotals(pCall),backgroundColor:'#378ADD99',borderRadius:5,borderSkipped:false}]);
+  mkChart('connectChart',lbl,[{label:'Kết nối',data:dayTotals(pConnect),backgroundColor:'#1D9E7599',borderRadius:5,borderSkipped:false}]);
 }
 
-function mkChart(id, labels, datasets, type='bar') {
-  if (charts[id]) charts[id].destroy();
-  const ctx = document.getElementById(id).getContext('2d');
-  charts[id] = new Chart(ctx, {
-    type,
-    data: { labels, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#888780' } },
-        y: { grid: { color: 'rgba(136,135,128,0.15)' }, ticks: { font: { size: 10 }, color: '#888780' } }
-      }
-    }
-  });
-  return charts[id];
+function renderAgentChart(m){
+  curAgent=m;
+  const cols={call:'#378ADD',connect:'#1D9E75',talk:'#BA7517'};
+  const kpiMap={call:agents.map(()=>KPI_CALL*WD),connect:agents.map(()=>KPI_KN),talk:agents.map(()=>KPI_PHUT)};
+  const dataMap={call:agents.map(a=>mtd(a,pCall)),connect:agents.map(a=>mtd(a,pConnect)),talk:agents.map(a=>mtd(a,pTalk))};
+  if(charts.agent) charts.agent.destroy();
+  charts.agent=new Chart(document.getElementById('agentChart'),{data:{labels:agents,datasets:[
+    {type:'bar',label:'Thực hiện',data:dataMap[m],backgroundColor:cols[m]+'bb',borderRadius:5,borderSkipped:false},
+    {type:'line',label:'KPI',data:kpiMap[m],borderColor:'#E24B4A',borderWidth:2,borderDash:[5,4],pointRadius:0,fill:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#888780'}},y:{grid:{color:'rgba(136,135,128,.15)'},ticks:{font:{size:10},color:'#888780'}}}}});
 }
 
-function renderDayCharts() {
-  const dayLabels = days.map(shortDay);
-  const callTotals = getDailyTotals(parsedCall);
-  const knTotals = getDailyTotals(parsedConnect);
-
-  mkChart('callDayChart', dayLabels, [{
-    label: 'Call', data: callTotals,
-    backgroundColor: '#378ADD99', borderRadius: 5, borderSkipped: false
-  }]);
-  mkChart('connectDayChart', dayLabels, [{
-    label: 'Kết nối', data: knTotals,
-    backgroundColor: '#1D9E7599', borderRadius: 5, borderSkipped: false
-  }]);
+function switchAgent(m,btn){
+  document.querySelectorAll('.card>.tabs .tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderAgentChart(m);
 }
 
-function renderAgentChart(metric) {
-  currentAgentMetric = metric;
-  const colors = { call: '#378ADD', connect: '#1D9E75', talk: '#BA7517' };
-  const dataMap = {
-    call: { d: agents.map(a => getMTD(a, parsedCall)), kpi: agents.map(() => KPI_CALL_DAY * WD) },
-    connect: { d: agents.map(a => getMTD(a, parsedConnect)), kpi: agents.map(() => KPI_KN) },
-    talk: { d: agents.map(a => getMTD(a, parsedTalk)), kpi: agents.map(() => KPI_PHUT) },
-  };
-  const dm = dataMap[metric];
-  const col = colors[metric];
-
-  if (charts['agentChart']) charts['agentChart'].destroy();
-  const ctx = document.getElementById('agentChart').getContext('2d');
-  charts['agentChart'] = new Chart(ctx, {
-    data: {
-      labels: agents.map(a => a.replace('OTC - ', '')),
-      datasets: [
-        { type: 'bar', label: 'Thực hiện', data: dm.d, backgroundColor: col + 'bb', borderRadius: 5, borderSkipped: false },
-        { type: 'line', label: 'KPI', data: dm.kpi, borderColor: '#E24B4A', borderWidth: 2, borderDash: [5, 4], pointRadius: 0, fill: false }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#888780' } },
-        y: { grid: { color: 'rgba(136,135,128,0.15)' }, ticks: { font: { size: 10 }, color: '#888780' } }
-      }
-    }
-  });
-}
-
-function renderMTDTable() {
-  const tbody = document.getElementById('mtdBody');
-  let html = '';
-  const totals = { call: 0, kn: 0, phut: 0 };
-
-  // Tìm người dẫn đầu KN và Talktime
-  const knScores = agents.map(a => getMTD(a, parsedConnect));
-  const talkScores = agents.map(a => getMTD(a, parsedTalk));
-  const maxKN = Math.max(...knScores);
-  const maxTalk = Math.max(...talkScores);
-
-  agents.forEach(a => {
-    const tc = getMTD(a, parsedCall);
-    const tk = getMTD(a, parsedConnect);
-    const tp = getMTD(a, parsedTalk);
-    const remKN = tk - KPI_KN;
-    const remPhut = tp - KPI_PHUT;
-    const pctKN = KPI_KN ? Math.round(tk / KPI_KN * 100) : 0;
-    const pctPhut = KPI_PHUT ? Math.round(tp / KPI_PHUT * 100) : 0;
-    const avgC = days.length ? (tc / days.length).toFixed(1) : 0;
-    const avgK = days.length ? (tk / days.length).toFixed(1) : 0;
-    const avgP = days.length ? (tp / days.length).toFixed(1) : 0;
-    function mkBadge(rem, threshold) {
-      if (rem >= 0) return '<span class="badge badge-g">✓ Đạt</span>';
-      if (rem >= -threshold) return '<span class="badge badge-y">~ Gần đạt</span>';
-      return '<span class="badge badge-r">✗ Chưa đạt</span>';
-    }
-    const badgeKN = mkBadge(remKN, 50);
-    const badgePhut = mkBadge(remPhut, 60);
-    totals.call += tc; totals.kn += tk; totals.phut += tp;
-
-    const rowClass = remKN >= 0 && remPhut >= 0 ? 'row-ok'
-      : (remKN >= -50 || remPhut >= -60) && !(remKN < -50 && remPhut < -60) ? 'row-warn'
-      : 'row-bad';
-    html += `<tr class="${rowClass}">
-      <td class="bold">${a}${tk === maxKN ? ' <span title="Dẫn đầu Kết Nối" style="font-size:14px;">👑</span>' : ''}${tp === maxTalk ? ' <span title="Dẫn đầu Talktime" style="font-size:14px;">🏆</span>' : ''}</td>
-      <td class="num">${tc.toLocaleString()}</td>
-      <td class="num">${tk}</td>
-      <td class="num">${tp}</td>
-      <td class="num">${avgC}</td>
-      <td class="num">${avgK}</td>
-      <td class="num">${avgP}</td>
-      <td class="num ${remKN < 0 ? 'kpi-neg' : 'kpi-pos'}">${remKN > 0 ? '+' : ''}${remKN}</td>
-      <td class="num ${remPhut < 0 ? 'kpi-neg' : 'kpi-pos'}">${remPhut > 0 ? '+' : ''}${remPhut.toFixed(1)}</td>
-      <td class="num">${pctKN}%</td>
-      <td class="num">${pctPhut}%</td>
-      <td style="text-align:center;">${badgeKN}</td>
-      <td style="text-align:center;">${badgePhut}</td>
+// ── RENDER MTD TABLE ──────────────────────────────────────────────────────────
+function renderMTD(){
+  const knScores=agents.map(a=>mtd(a,pConnect));
+  const tkScores=agents.map(a=>mtd(a,pTalk));
+  const maxKN=Math.max(...knScores), maxTK=Math.max(...tkScores);
+  let html='', tot={c:0,k:0,p:0};
+  agents.forEach(a=>{
+    const tc=mtd(a,pCall), tk=mtd(a,pConnect), tp=mtd(a,pTalk);
+    const rk=tk-KPI_KN, rp=tp-KPI_PHUT;
+    const pctK=KPI_KN?Math.round(tk/KPI_KN*100):0, pctP=KPI_PHUT?Math.round(tp/KPI_PHUT*100):0;
+    const aC=days.length?(tc/days.length).toFixed(1):0, aK=days.length?(tk/days.length).toFixed(1):0, aP=days.length?(tp/days.length).toFixed(1):0;
+    const mkB=(r,t)=>r>=0?'<span class="badge bg">✓ Đạt</span>':r>=-t?'<span class="badge by">~ Gần đạt</span>':'<span class="badge br">✗ Chưa đạt</span>';
+    const rc=rk>=0&&rp>=0?'row-ok':(rk>=-50||rp>=-60)&&!(rk<-50&&rp<-60)?'row-warn':'row-bad';
+    tot.c+=tc; tot.k+=tk; tot.p+=tp;
+    html+=`<tr class="${rc}">
+      <td class="bold">${a}${tk===maxKN?' <span title="Dẫn đầu KN">👑</span>':''}${tp===maxTK?' <span title="Dẫn đầu Talktime">🏆</span>':''}</td>
+      <td class="num">${tc.toLocaleString()}</td><td class="num">${tk}</td><td class="num">${tp}</td>
+      <td class="num">${aC}</td><td class="num">${aK}</td><td class="num">${aP}</td>
+      <td class="num ${rk<0?'kx':'kn'}">${rk>0?'+':''}${rk}</td>
+      <td class="num ${rp<0?'kx':'kn'}">${rp>0?'+':''}${rp.toFixed(1)}</td>
+      <td class="num">${pctK}%</td><td class="num">${pctP}%</td>
+      <td style="text-align:center;">${mkB(rk,50)}</td>
+      <td style="text-align:center;">${mkB(rp,60)}</td>
     </tr>`;
   });
-
-  // Totals row
-  const n = agents.length;
-  html += `<tr class="row-total" style="font-weight:600;">
+  const n=agents.length;
+  html+=`<tr class="row-tot" style="font-weight:600;">
     <td class="bold">TỔNG / TB</td>
-    <td class="num">${totals.call.toLocaleString()}</td>
-    <td class="num">${totals.kn}</td>
-    <td class="num">${totals.phut}</td>
-    <td class="num">${(totals.call / n / days.length).toFixed(1)}</td>
-    <td class="num">${(totals.kn / n / days.length).toFixed(1)}</td>
-    <td class="num">${(totals.phut / n / days.length).toFixed(1)}</td>
-    <td class="num ${(totals.kn - n * KPI_KN) < 0 ? 'kpi-neg' : 'kpi-pos'}">${totals.kn - n * KPI_KN > 0 ? '+' : ''}${totals.kn - n * KPI_KN}</td>
-    <td class="num ${(totals.phut - n * KPI_PHUT) < 0 ? 'kpi-neg' : 'kpi-pos'}">${(totals.phut - n * KPI_PHUT) > 0 ? '+' : ''}${(totals.phut - n * KPI_PHUT).toFixed(1)}</td>
-    <td class="num">${Math.round(totals.kn / (n * KPI_KN) * 100)}%</td>
-    <td class="num">${Math.round(totals.phut / (n * KPI_PHUT) * 100)}%</td>
-    <td></td>
+    <td class="num">${tot.c.toLocaleString()}</td><td class="num">${tot.k}</td><td class="num">${tot.p}</td>
+    <td class="num">${(tot.c/n/days.length).toFixed(1)}</td><td class="num">${(tot.k/n/days.length).toFixed(1)}</td><td class="num">${(tot.p/n/days.length).toFixed(1)}</td>
+    <td class="num ${(tot.k-n*KPI_KN)<0?'kx':'kn'}">${tot.k-n*KPI_KN>0?'+':''}${tot.k-n*KPI_KN}</td>
+    <td class="num ${(tot.p-n*KPI_PHUT)<0?'kx':'kn'}">${(tot.p-n*KPI_PHUT)>0?'+':''}${(tot.p-n*KPI_PHUT).toFixed(1)}</td>
+    <td class="num">${Math.round(tot.k/(n*KPI_KN)*100)}%</td><td class="num">${Math.round(tot.p/(n*KPI_PHUT)*100)}%</td>
+    <td></td><td></td>
+  </tr>`;
+  document.getElementById('mtdBody').innerHTML=html;
+}
+
+// ── RENDER DAILY TABLE ────────────────────────────────────────────────────────
+function renderDaily(m){
+  curDaily=m;
+  const d={call:pCall,connect:pConnect,talk:pTalk}[m];
+  const lbl=days.map(shortD);
+  let h=`<tr><th>Tên</th>`;
+  lbl.forEach(l=>{h+=`<th class="num">${l}</th>`;});
+  h+=`<th class="num bold">Tổng</th></tr>`;
+  document.getElementById('dailyHead').innerHTML=h;
+  let html='';
+  agents.forEach(a=>{
+    const vals=d[a]||days.map(()=>0);
+    let row=`<tr><td class="bold">${a}</td>`;
+    vals.forEach(v=>{row+=`<td class="num">${v||''}</td>`;});
+    row+=`<td class="num bold">${sum(vals)}</td></tr>`;
+    html+=row;
+  });
+  let tRow=`<tr class="row-tot" style="font-weight:600;"><td>TỔNG</td>`;
+  let gt=0;
+  days.forEach((_,i)=>{const s=agents.reduce((x,a)=>x+((d[a]&&d[a][i])||0),0);gt+=s;tRow+=`<td class="num">${s}</td>`;});
+  tRow+=`<td class="num">${gt}</td></tr>`;
+  document.getElementById('dailyBody').innerHTML=html+tRow;
+}
+
+function switchDaily(m,btn){
+  document.querySelectorAll('#tbl-daily .tabs .tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderDaily(m);
+}
+
+// ── RENDER TODAY ──────────────────────────────────────────────────────────────
+function renderToday(){
+  const sec=document.getElementById('todaySection');
+  const has=Object.keys(tConnect).length>0||Object.keys(tTalk).length>0||Object.keys(tCall).length>0;
+  if(!tDate||!has){sec.style.display='none';return;}
+  sec.style.display='block';
+  document.getElementById('todayDateLabel').textContent=tDate;
+  const tgC=KPI_CALL, tgK=Math.round(KPI_KN/WD), tgP=Math.round(KPI_PHUT/WD);
+  let html='';
+  agents.forEach(a=>{
+    const c=tCall[a]||0, k=tConnect[a]||0, p=tTalk[a]||0;
+    const okC=c>=tgC, okK=k>=tgK, okP=p>=tgP;
+    const all=okC&&okK&&okP, any=okC||okK||okP;
+    const bg=all?'#e8f5e2':any?'#fff8ec':'#eef3ff';
+    const cc=okC?'#27500A':'#A32D2D', kc=okK?'#27500A':'#A32D2D', pc2=okP?'#27500A':'#A32D2D';
+    const badge=all?'<span class="badge bg">🔥 Đạt cả 3</span>':(okK&&okP)?'<span class="badge bg">✓ Đạt KN & Phút</span>':any?'<span class="badge by">⚡ Đạt một phần</span>':'<span class="badge" style="background:#eef3ff;color:#0C447C;">💪 Cần cố thêm</span>';
+    html+=`<tr style="background:${bg};">
+      <td class="bold">${a}</td>
+      <td class="num" style="font-weight:700;color:${cc};">${c}</td><td class="num" style="color:var(--text2);">${tgC}</td>
+      <td class="num" style="font-weight:700;color:${kc};">${k}</td><td class="num" style="color:var(--text2);">${tgK}</td>
+      <td class="num" style="font-weight:700;color:${kc};">${k-tgK>=0?'+'+(k-tgK):k-tgK}</td>
+      <td class="num" style="font-weight:700;color:${pc2};">${p}</td><td class="num" style="color:var(--text2);">${tgP}</td>
+      <td class="num" style="font-weight:700;color:${pc2};">${p-tgP>=0?'+'+(p-tgP):p-tgP}</td>
+      <td style="text-align:center;">${badge}</td>
+    </tr>`;
+  });
+  const tc=agents.reduce((s,a)=>s+(tCall[a]||0),0);
+  const tk=agents.reduce((s,a)=>s+(tConnect[a]||0),0);
+  const tp=agents.reduce((s,a)=>s+(tTalk[a]||0),0);
+  html+=`<tr style="background:#fdf6e3;font-weight:700;border-top:2px solid #FAC775;">
+    <td class="bold">TỔNG NHÓM</td>
+    <td class="num">${tc}</td><td class="num">${tgC*agents.length}</td>
+    <td class="num">${tk}</td><td class="num">${tgK*agents.length}</td>
+    <td class="num" style="color:${tk>=tgK*agents.length?'#27500A':'#A32D2D'};">${tk-tgK*agents.length>=0?'+':''}${tk-tgK*agents.length}</td>
+    <td class="num">${tp}</td><td class="num">${tgP*agents.length}</td>
+    <td class="num" style="color:${tp>=tgP*agents.length?'#27500A':'#A32D2D'};">${tp-tgP*agents.length>=0?'+':''}${tp-tgP*agents.length}</td>
     <td></td>
   </tr>`;
-
-  tbody.innerHTML = html;
+  document.getElementById('todayBody').innerHTML=html;
 }
 
-function renderDailyTable(metric) {
-  currentDailyMetric = metric;
-  const dataMap = { call: parsedCall, connect: parsedConnect, talk: parsedTalk };
-  const data = dataMap[metric];
-
-  const thead = document.getElementById('dailyHead');
-  const tbody = document.getElementById('dailyBody');
-
-  // Header
-  let hRow = '<tr><th>Tên</th>';
-  days.forEach(d => { hRow += `<th class="num">${shortDay(d)}</th>`; });
-  hRow += '<th class="num bold">Tổng</th></tr>';
-  thead.innerHTML = hRow;
-
-  // Body
-  let html = '';
-  agents.forEach(a => {
-    const vals = data[a] || days.map(() => 0);
-    const total = sum(vals);
-    let row = `<tr><td class="bold">${a}</td>`;
-    vals.forEach(v => { row += `<td class="num">${v || ''}</td>`; });
-    row += `<td class="num bold">${total}</td></tr>`;
-    html += row;
-  });
-
-  // Totals row
-  let tRow = `<tr style="background:var(--surface2);font-weight:600;"><td>TỔNG</td>`;
-  let grandTotal = 0;
-  days.forEach((_, di) => {
-    const daySum = agents.reduce((s, a) => s + ((data[a] && data[a][di]) || 0), 0);
-    grandTotal += daySum;
-    tRow += `<td class="num">${daySum}</td>`;
-  });
-  tRow += `<td class="num">${grandTotal}</td></tr>`;
-  html += tRow;
-  tbody.innerHTML = html;
-}
-
-// ─── CONTROLS ────────────────────────────────────────────────────────────────
-function switchAgent(metric, btn) {
-  document.querySelectorAll('.card > .tabs .tab').forEach(t => t.classList.remove('active'));
+// ── CONTROLS ──────────────────────────────────────────────────────────────────
+function switchTable(v,btn){
+  document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  renderAgentChart(metric);
+  document.querySelectorAll('.tsec').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tbl-'+v).classList.add('active');
 }
 
-function switchTable(view, btn) {
-  document.querySelectorAll('.ttab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.tbl-section').forEach(s => s.classList.remove('active'));
-  document.getElementById('tbl-' + view).classList.add('active');
-}
+function openModal(){document.getElementById('modalBg').classList.add('open');}
+function closeModal(){document.getElementById('modalBg').classList.remove('open');}
+function bgClose(e){if(e.target===document.getElementById('modalBg'))closeModal();}
 
-function switchDailyMetric(metric, btn) {
-  document.querySelectorAll('#tbl-daily .tabs .tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  renderDailyTable(metric);
-}
-
-// ─── MODAL ───────────────────────────────────────────────────────────────────
-function openModal() {
-  document.getElementById('modalBg').classList.add('open');
-}
-function closeModal() {
-  document.getElementById('modalBg').classList.remove('open');
-}
-function bgClose(e) {
-  if (e.target === document.getElementById('modalBg')) closeModal();
-}
-
-function applyData() {
-  WD = parseFloat(document.getElementById('wdInput').value) || 9.5;
-  KPI_KN = parseInt(document.getElementById('kpiKN').value) || 380;
-  KPI_PHUT = parseInt(document.getElementById('kpiPhut').value) || 475;
-  KPI_CALL_DAY = parseInt(document.getElementById('kpiCall').value) || 40;
-
-  const period = document.getElementById('periodInput').value;
-  document.getElementById('periodLabel').textContent = 'Month to date: ' + period;
-
-  const rawCall = document.getElementById('rawCall').value.trim();
-  const rawConnect = document.getElementById('rawConnect').value.trim();
-  const rawTalk = document.getElementById('rawTalk').value.trim();
-
-  if (!rawCall && !rawConnect && !rawTalk) {
-    alert('Vui lòng nhập ít nhất một bảng dữ liệu.');
-    return;
-  }
-
-  buildState(rawCall, rawConnect, rawTalk);
-
-  todayDate = document.getElementById('todayDate').value.trim();
-  const trc = document.getElementById('todayRawCall').value.trim();
-  const trk = document.getElementById('todayRawConnect').value.trim();
-  const trt = document.getElementById('todayRawTalk').value.trim();
-  todayCall = parseTodayTSV(trc);
-  todayConnect = parseTodayTSV(trk);
-  todayTalk = parseTodayTSV(trt);
-
+function applyData(){
+  WD=parseFloat(document.getElementById('wdInput').value)||9.5;
+  KPI_KN=parseInt(document.getElementById('kpiKN').value)||380;
+  KPI_PHUT=parseInt(document.getElementById('kpiPhut').value)||475;
+  KPI_CALL=parseInt(document.getElementById('kpiCall').value)||40;
+  document.getElementById('periodLabel').textContent='Month to date: '+document.getElementById('periodInput').value;
+  const rc=document.getElementById('rawCall').value.trim();
+  const rk=document.getElementById('rawConnect').value.trim();
+  const rt=document.getElementById('rawTalk').value.trim();
+  if(!rc&&!rk&&!rt){alert('Vui lòng nhập ít nhất một bảng dữ liệu MTD.');return;}
+  build(rc,rk,rt);
+  tDate=document.getElementById('todayDate').value.trim();
+  tCall=parseLine(document.getElementById('todayRawCall').value);
+  tConnect=parseLine(document.getElementById('todayRawConnect').value);
+  tTalk=parseLine(document.getElementById('todayRawTalk').value);
   renderAll();
   closeModal();
 }
 
-function renderTodayTable() {
-  const container = document.getElementById('todaySection');
-  const hasData = Object.keys(todayConnect).length > 0 || Object.keys(todayTalk).length > 0 || Object.keys(todayCall).length > 0;
-  if (!todayDate || !hasData) {
-    container.style.display = 'none';
-    return;
-  }
-  container.style.display = 'block';
-  document.getElementById('todayDateLabel').textContent = todayDate;
-
-  const targetCall = KPI_CALL_DAY;
-  const targetKN = Math.round(KPI_KN / WD);
-  const targetPhut = Math.round(KPI_PHUT / WD);
-
-  let html = '';
-  agents.forEach(a => {
-    const tc = todayCall[a] || 0;
-    const tk = todayConnect[a] || 0;
-    const tp = todayTalk[a] || 0;
-    const okCall = tc >= targetCall;
-    const okKN = tk >= targetKN;
-    const okPhut = tp >= targetPhut;
-    const allOk = okCall && okKN && okPhut;
-    const anyOk = okCall || okKN || okPhut;
-    const rowBg = allOk ? '#e8f5e2' : anyOk ? '#fff8ec' : '#eef3ff';
-    const remKN = tk - targetKN;
-    const remPhut = tp - targetPhut;
-    const callColor = okCall ? '#27500A' : '#A32D2D';
-    const knColor = okKN ? '#27500A' : '#A32D2D';
-    const phutColor = okPhut ? '#27500A' : '#A32D2D';
-    const statusBadge = allOk
-      ? '<span class="badge badge-g">🔥 Đạt cả 3</span>'
-      : (okKN && okPhut)
-        ? '<span class="badge badge-g">✓ Đạt KN & Phút</span>'
-        : anyOk
-          ? '<span class="badge badge-y">⚡ Đạt một phần</span>'
-          : '<span class="badge" style="background:#eef3ff;color:#0C447C;">💪 Cần cố thêm</span>';
-
-    html += `<tr style="background:${rowBg};">
-      <td class="bold">${a}</td>
-      <td class="num" style="font-weight:700;color:${callColor};">${tc}</td>
-      <td class="num" style="color:var(--text2);">${targetCall}</td>
-      <td class="num" style="font-weight:700;color:${knColor};">${tk}</td>
-      <td class="num" style="color:var(--text2);">${targetKN}</td>
-      <td class="num" style="font-weight:700;color:${knColor};">${remKN >= 0 ? '+'+remKN : remKN}</td>
-      <td class="num" style="font-weight:700;color:${phutColor};">${tp}</td>
-      <td class="num" style="color:var(--text2);">${targetPhut}</td>
-      <td class="num" style="font-weight:700;color:${phutColor};">${remPhut >= 0 ? '+'+remPhut : remPhut}</td>
-      <td style="text-align:center;">${statusBadge}</td>
-    </tr>`;
-  });
-
-  const totC = agents.reduce((s,a)=>s+(todayCall[a]||0),0);
-  const totK = agents.reduce((s,a)=>s+(todayConnect[a]||0),0);
-  const totP = agents.reduce((s,a)=>s+(todayTalk[a]||0),0);
-  html += `<tr style="background:#fdf6e3;font-weight:700;border-top:2px solid #FAC775;">
-    <td class="bold">TỔNG NHÓM</td>
-    <td class="num">${totC}</td><td class="num">${targetCall * agents.length}</td>
-    <td class="num">${totK}</td><td class="num">${targetKN * agents.length}</td>
-    <td class="num" style="color:${totK>=targetKN*agents.length?'#27500A':'#A32D2D'};">${totK-targetKN*agents.length>=0?'+':''}${totK-targetKN*agents.length}</td>
-    <td class="num">${totP}</td><td class="num">${targetPhut * agents.length}</td>
-    <td class="num" style="color:${totP>=targetPhut*agents.length?'#27500A':'#A32D2D'};">${totP-targetPhut*agents.length>=0?'+':''}${totP-targetPhut*agents.length}</td>
-    <td></td>
-  </tr>`;
-
-  document.getElementById('todayBody').innerHTML = html;
-}
-
-function renderAll() {
+function renderAll(){
   renderMetrics();
-  renderDayCharts();
-  renderAgentChart(currentAgentMetric);
-  renderMTDTable();
-  renderDailyTable(currentDailyMetric);
-  renderTodayTable();
+  renderCharts();
+  renderAgentChart(curAgent);
+  renderMTD();
+  renderDaily(curDaily);
+  renderToday();
 }
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
-document.getElementById('rawCall').value = DEFAULT_CALL;
-document.getElementById('rawConnect').value = DEFAULT_CONNECT;
-document.getElementById('rawTalk').value = DEFAULT_TALK;
-
-buildState(DEFAULT_CALL, DEFAULT_CONNECT, DEFAULT_TALK);
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.getElementById('rawCall').value=DC;
+document.getElementById('rawConnect').value=DK;
+document.getElementById('rawTalk').value=DT;
+build(DC,DK,DT);
 renderAll();
 </script>
-
-
-</body></html>
+</body>
+</html>
