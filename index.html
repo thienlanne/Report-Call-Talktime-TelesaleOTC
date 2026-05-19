@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0043)file:///C:/Users/PC_HP/Downloads/index.html -->
+<!-- saved from url=(0045)file:///C:/Users/PC_HP/Downloads/index_2.html -->
 <html lang="vi"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -186,11 +186,13 @@
             <thead>
               <tr>
                 <th style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Tên</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Kết nối hôm nay</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Target KN/ngày</th>
+                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Call</th>
+                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Target Call</th>
+                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Kết nối</th>
+                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Target KN</th>
                 <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Còn thiếu KN</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Talktime hôm nay</th>
-                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Target Phút/ngày</th>
+                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Talktime</th>
+                <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Target Phút</th>
                 <th class="num" style="background:#fdf6e3;border-bottom:2px solid #FAC775;">Còn thiếu Phút</th>
                 <th style="text-align:center;background:#fdf6e3;border-bottom:2px solid #FAC775;">Trạng thái</th>
               </tr>
@@ -941,7 +943,7 @@ function applyData() {
 
 function renderTodayTable() {
   const container = document.getElementById('todaySection');
-  const hasData = Object.keys(todayConnect).length > 0 || Object.keys(todayTalk).length > 0;
+  const hasData = Object.keys(todayConnect).length > 0 || Object.keys(todayTalk).length > 0 || Object.keys(todayCall).length > 0;
   if (!todayDate || !hasData) {
     container.style.display = 'none';
     return;
@@ -949,51 +951,58 @@ function renderTodayTable() {
   container.style.display = 'block';
   document.getElementById('todayDateLabel').textContent = todayDate;
 
+  const targetCall = KPI_CALL_DAY;
   const targetKN = Math.round(KPI_KN / WD);
   const targetPhut = Math.round(KPI_PHUT / WD);
 
   let html = '';
   agents.forEach(a => {
+    const tc = todayCall[a] || 0;
     const tk = todayConnect[a] || 0;
     const tp = todayTalk[a] || 0;
+    const okCall = tc >= targetCall;
     const okKN = tk >= targetKN;
     const okPhut = tp >= targetPhut;
-    const allOk = okKN && okPhut;
-    const anyOk = okKN || okPhut;
+    const allOk = okCall && okKN && okPhut;
+    const anyOk = okCall || okKN || okPhut;
     const rowBg = allOk ? '#e8f5e2' : anyOk ? '#fff8ec' : '#eef3ff';
-
     const remKN = tk - targetKN;
     const remPhut = tp - targetPhut;
-
+    const callColor = okCall ? '#27500A' : '#A32D2D';
     const knColor = okKN ? '#27500A' : '#A32D2D';
     const phutColor = okPhut ? '#27500A' : '#A32D2D';
     const statusBadge = allOk
-      ? '<span class="badge badge-g">🔥 Đạt cả 2</span>'
-      : anyOk
-        ? '<span class="badge badge-y">⚡ Đạt 1 chỉ tiêu</span>'
-        : '<span class="badge" style="background:#eef3ff;color:#0C447C;">💪 Cần cố thêm</span>';
+      ? '<span class="badge badge-g">🔥 Đạt cả 3</span>'
+      : (okKN && okPhut)
+        ? '<span class="badge badge-g">✓ Đạt KN & Phút</span>'
+        : anyOk
+          ? '<span class="badge badge-y">⚡ Đạt một phần</span>'
+          : '<span class="badge" style="background:#eef3ff;color:#0C447C;">💪 Cần cố thêm</span>';
 
     html += `<tr style="background:${rowBg};">
-      <td class="bold" style="border-right:1px solid var(--border2);">${a}</td>
+      <td class="bold">${a}</td>
+      <td class="num" style="font-weight:700;color:${callColor};">${tc}</td>
+      <td class="num" style="color:var(--text2);">${targetCall}</td>
       <td class="num" style="font-weight:700;color:${knColor};">${tk}</td>
       <td class="num" style="color:var(--text2);">${targetKN}</td>
       <td class="num" style="font-weight:700;color:${knColor};">${remKN >= 0 ? '+'+remKN : remKN}</td>
-      <td class="num" style="font-weight:700;color:${phutColor};border-left:1px solid var(--border2);">${tp}</td>
+      <td class="num" style="font-weight:700;color:${phutColor};">${tp}</td>
       <td class="num" style="color:var(--text2);">${targetPhut}</td>
       <td class="num" style="font-weight:700;color:${phutColor};">${remPhut >= 0 ? '+'+remPhut : remPhut}</td>
       <td style="text-align:center;">${statusBadge}</td>
     </tr>`;
   });
 
+  const totC = agents.reduce((s,a)=>s+(todayCall[a]||0),0);
   const totK = agents.reduce((s,a)=>s+(todayConnect[a]||0),0);
   const totP = agents.reduce((s,a)=>s+(todayTalk[a]||0),0);
   html += `<tr style="background:#fdf6e3;font-weight:700;border-top:2px solid #FAC775;">
     <td class="bold">TỔNG NHÓM</td>
+    <td class="num">${totC}</td><td class="num">${targetCall * agents.length}</td>
     <td class="num">${totK}</td><td class="num">${targetKN * agents.length}</td>
-    <td class="num" style="color:${totK >= targetKN*agents.length?'#27500A':'#A32D2D'};">${totK - targetKN*agents.length >= 0 ? '+' : ''}${totK - targetKN*agents.length}</td>
-    <td class="num" style="border-left:1px solid var(--border2);">${totP}</td>
-    <td class="num">${targetPhut * agents.length}</td>
-    <td class="num" style="color:${totP >= targetPhut*agents.length?'#27500A':'#A32D2D'};">${totP - targetPhut*agents.length >= 0 ? '+' : ''}${totP - targetPhut*agents.length}</td>
+    <td class="num" style="color:${totK>=targetKN*agents.length?'#27500A':'#A32D2D'};">${totK-targetKN*agents.length>=0?'+':''}${totK-targetKN*agents.length}</td>
+    <td class="num">${totP}</td><td class="num">${targetPhut * agents.length}</td>
+    <td class="num" style="color:${totP>=targetPhut*agents.length?'#27500A':'#A32D2D'};">${totP-targetPhut*agents.length>=0?'+':''}${totP-targetPhut*agents.length}</td>
     <td></td>
   </tr>`;
 
